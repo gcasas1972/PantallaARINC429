@@ -1,0 +1,12 @@
+{
+  "name": "indicador-viraje-ladeo",
+  "version": "1.0.0",
+  "description": "Indicador web de viraje y ladeo aeronáutico con sensores y WebSocket.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}

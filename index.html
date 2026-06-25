@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instrumento Bastón y Bola</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="cockpit">
+    <section class="panel" aria-label="Indicador bastón y bola aeronáutico">
+      <div class="instrument">
+        <div class="outer-ring">
+          <div class="glass">
+            <div class="face">
+              <div class="top-label">D.C.<br>ELEC.</div>
+
+              <div class="side-mark left"></div>
+              <div class="side-mark right"></div>
+              <div class="bank-mark left"></div>
+              <div class="bank-mark right"></div>
+
+              <div class="airplane" id="airplane">
+                <span class="wing main-wing"></span>
+                <span class="wing lower-wing"></span>
+                <span class="fuselage"></span>
+                <span class="tail"></span>
+              </div>
+
+              <div class="title">TURN COORDINATOR</div>
+
+              <div class="slip-box">
+                <div class="tube-shine"></div>
+                <div class="slip-limit left"></div>
+                <div class="slip-limit right"></div>
+                <div class="slip-ball" id="slipBall"></div>
+              </div>
+
+              <div class="lr-label left">L</div>
+              <div class="lr-label right">R</div>
+              <div class="rate-label">2 MIN.</div>
+              <div class="pitch-label">NO PITCH<br>INFORMATION</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="screen" aria-label="Pantalla de datos y ajustes">
+        <div class="screen-header">
+          <span>DATOS EN VIVO</span>
+          <strong id="socketStatus">WS desconectado</strong>
+        </div>
+
+        <div class="data-display">
+          <div>
+            <span>Roll</span>
+            <strong id="rollValue">0.0°</strong>
+          </div>
+          <div>
+            <span>Pitch</span>
+            <strong id="pitchValue">0.0°</strong>
+          </div>
+          <div>
+            <span>Yaw / viraje</span>
+            <strong id="yawValue">0.0°/s</strong>
+          </div>
+        </div>
+
+        <div class="controls">
+          <label>
+            <span>Roll informativo</span>
+            <input id="rollInput" type="number" step="0.1" value="0">
+          </label>
+
+          <label>
+            <span>Pitch informativo</span>
+            <input id="pitchInput" type="number" step="0.1" value="0">
+          </label>
+
+          <label>
+            <span>Yaw / razon de viraje</span>
+            <input id="yawInput" type="number" step="0.1" value="0">
+          </label>
+
+          <label>
+            <span>Resbale / derrape</span>
+            <input id="slipInput" type="number" step="0.1" value="0">
+          </label>
+
+          <label>
+            <span>Unidad de medida</span>
+            <select id="unitSelect">
+              <option value="deg">Grados</option>
+              <option value="rad">Radianes</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Sensibilidad viraje</span>
+            <input id="turnGain" type="range" min="0.4" max="1.8" step="0.05" value="1">
+          </label>
+
+          <label>
+            <span>Trim bola</span>
+            <input id="ballTrim" type="range" min="-40" max="40" step="1" value="0">
+          </label>
+
+          <label>
+            <span>Suavizado</span>
+            <input id="smoothGain" type="range" min="0.04" max="0.28" step="0.01" value="0.14">
+          </label>
+        </div>
+
+        <div class="final-data" aria-live="polite">
+          <span>Datos final</span>
+          <strong id="finalInstrument">Instrumento: Bastón y bola</strong>
+          <p id="finalValues">Roll: 0.0° · Pitch: 0.0° · Yaw: 0.0°/s</p>
+        </div>
+
+        <p class="instrument-note">
+          El miniavión solo responde al valor ingresado de yaw. Roll y pitch son informativos; la bola responde al resbale/derrape.
+        </p>
+      </aside>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
