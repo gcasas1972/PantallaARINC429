@@ -7,6 +7,19 @@
   const socketStatus = document.getElementById("socketStatus");
   const unitSelect = document.getElementById("unitSelect");
   const finalValues = document.getElementById("finalValues");
+  const simulatorView = document.getElementById("simulatorView");
+  const resultsView = document.getElementById("resultsView");
+  const sendDataButton = document.getElementById("sendDataButton");
+  const backButton = document.getElementById("backButton");
+  const resetButton = document.getElementById("resetButton");
+  const newButton = document.getElementById("newButton");
+  const resultRoll = document.getElementById("resultRoll");
+  const resultPitch = document.getElementById("resultPitch");
+  const resultYaw = document.getElementById("resultYaw");
+  const resultAngle = document.getElementById("resultAngle");
+  const resultBall = document.getElementById("resultBall");
+  const resultStatus = document.getElementById("resultStatus");
+  const resultTimestamp = document.getElementById("resultTimestamp");
   const rollInput = document.getElementById("rollInput");
   const pitchInput = document.getElementById("pitchInput");
   const yawInput = document.getElementById("yawInput");
@@ -52,6 +65,10 @@
   function formatRate(value, unit) {
     if (unit === "rad") return `${(value * Math.PI / 180).toFixed(3)} rad/s`;
     return `${value.toFixed(1)}°/s`;
+  }
+
+  function formatDegrees(value) {
+    return `${value.toFixed(1)}°`;
   }
 
   function setSocketStatus(text, connected) {
@@ -125,6 +142,64 @@
     startInterpolation();
   }
 
+  function ballPositionText(value) {
+    if (Math.abs(value) < 6) return "Centrada";
+    return value < 0 ? "Izquierda" : "Derecha";
+  }
+
+  function turnStatus() {
+    const status = [];
+    const yawAbs = Math.abs(state.yaw);
+
+    if (yawAbs < 0.05) {
+      status.push("Vuelo recto");
+    } else {
+      status.push(state.yaw < 0 ? "Viraje a la izquierda" : "Viraje a la derecha");
+      if (Math.abs(yawAbs - 3) <= 0.35) status.push("Viraje estándar");
+    }
+
+    if (state.slip > 0.05) status.push("Derrape");
+    if (state.slip < -0.05) status.push("Resbale");
+
+    return status.join(" · ");
+  }
+
+  function updateResults() {
+    const unit = unitSelect.value;
+
+    resultRoll.textContent = formatAngle(state.roll, unit);
+    resultPitch.textContent = formatAngle(state.pitch, unit);
+    resultYaw.textContent = formatRate(state.yaw, unit);
+    resultAngle.textContent = formatDegrees(target.angle);
+    resultBall.textContent = ballPositionText(target.ball);
+    resultStatus.textContent = turnStatus();
+    resultTimestamp.textContent = new Date().toLocaleString();
+  }
+
+  function showResults() {
+    updateTargets();
+    updateResults();
+    sendData();
+    simulatorView.classList.add("hidden");
+    resultsView.classList.remove("hidden");
+  }
+
+  function showSimulator() {
+    resultsView.classList.add("hidden");
+    simulatorView.classList.remove("hidden");
+  }
+
+  function resetSimulation() {
+    rollInput.value = "0";
+    pitchInput.value = "0";
+    yawInput.value = "0";
+    slipInput.value = "0";
+    ballTrimInput.value = "0";
+    unitSelect.value = "deg";
+    updateTargets();
+    updateResults();
+  }
+
   function render() {
     const smoothing = Number(smoothGainInput.value);
 
@@ -166,6 +241,14 @@
   ].forEach((control) => {
     control.addEventListener("input", updateTargets);
     control.addEventListener("change", updateTargets);
+  });
+
+  sendDataButton.addEventListener("click", showResults);
+  backButton.addEventListener("click", showSimulator);
+  resetButton.addEventListener("click", resetSimulation);
+  newButton.addEventListener("click", function () {
+    resetSimulation();
+    showSimulator();
   });
 
   connectSocket();

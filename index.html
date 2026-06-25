@@ -8,7 +8,7 @@
 </head>
 <body>
   <main class="cockpit">
-    <section class="panel" aria-label="Indicador bastón y bola aeronáutico">
+    <section class="panel" id="simulatorView" aria-label="Indicador bastón y bola aeronáutico">
       <div class="instrument">
         <div class="outer-ring">
           <div class="glass">
@@ -43,6 +43,7 @@
             </div>
           </div>
         </div>
+        <button class="action-button send-button" id="sendDataButton" type="button">Enviar datos</button>
       </div>
 
       <aside class="screen" aria-label="Pantalla de datos y ajustes">
@@ -121,6 +122,56 @@
           El miniavión solo responde al valor ingresado de yaw. Roll y pitch son informativos; la bola responde al resbale/derrape.
         </p>
       </aside>
+    </section>
+
+    <section class="results-view hidden" id="resultsView" aria-label="Resultados">
+      <div class="results-card">
+        <div class="results-header">
+          <span>Resultados</span>
+          <strong>DATOS FINALES</strong>
+        </div>
+
+        <dl class="results-list">
+          <div>
+            <dt>Instrumento</dt>
+            <dd>Bastón y Bola (Turn Coordinator)</dd>
+          </div>
+          <div>
+            <dt>Roll</dt>
+            <dd id="resultRoll">0.0°</dd>
+          </div>
+          <div>
+            <dt>Pitch</dt>
+            <dd id="resultPitch">0.0°</dd>
+          </div>
+          <div>
+            <dt>Yaw / Razón de viraje</dt>
+            <dd id="resultYaw">0.0°/s</dd>
+          </div>
+          <div>
+            <dt>Ángulo del miniavión</dt>
+            <dd id="resultAngle">0.0°</dd>
+          </div>
+          <div>
+            <dt>Posición de la bola</dt>
+            <dd id="resultBall">Centrada</dd>
+          </div>
+          <div>
+            <dt>Estado del viraje</dt>
+            <dd id="resultStatus">Vuelo recto</dd>
+          </div>
+          <div>
+            <dt>Fecha y hora</dt>
+            <dd id="resultTimestamp">--</dd>
+          </div>
+        </dl>
+
+        <div class="result-actions">
+          <button class="action-button" id="backButton" type="button">Volver al simulador</button>
+          <button class="action-button secondary" id="resetButton" type="button">Reiniciar simulación</button>
+          <button class="action-button secondary" id="newButton" type="button">Nueva simulación</button>
+        </div>
+      </div>
     </section>
   </main>
 
