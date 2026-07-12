@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indicador de Flaps - Sentido Horario Corregido</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            user-select: none;
+        }
+
+        h1 {
+            color: #aaaaaa;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 20px;
+            margin-bottom: 25px;
+        }
+
+        .instrument-container {
+            background-color: #0b0b0b;
+            border: 4px solid #333333;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .controls {
+            margin-top: 30px;
+            background: #222;
+            padding: 15px 25px;
+            border-radius: 30px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            border: 1px solid #444;
+        }
+
+        input[type="range"] {
+            width: 180px;
+            cursor: pointer;
+        }
+
+        .pos-indicator {
+            font-size: 20px;
+            font-weight: bold;
+            color: #00ff66;
+            min-width: 45px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Instrumentación de Cabina</h1>
+
+    <div class="instrument-container">
+        <svg width="300" height="300" viewBox="0 0 300 300">
+            <circle cx="150" cy="150" r="140" fill="#111111" stroke="#444444" stroke-width="3"/>
+            
+            <text x="90" y="200" fill="#ffffff" font-size="22" font-weight="bold" text-anchor="middle">0</text>
+            <text x="80" y="115" fill="#ffffff" font-size="22" font-weight="bold" text-anchor="middle">10</text>
+            <text x="150" y="75" fill="#ffffff" font-size="22" font-weight="bold" text-anchor="middle">20</text>
+            <text x="220" y="115" fill="#ffffff" font-size="22" font-weight="bold" text-anchor="middle">30</text>
+            <text x="210" y="200" fill="#ffffff" font-size="22" font-weight="bold" text-anchor="middle">40</text>
+            
+            <text x="150" y="115" fill="#ffffff" font-size="14" font-weight="bold" letter-spacing="2" text-anchor="middle">DEGREES</text>
+            <text x="150" y="190" fill="#ffffff" font-size="18" font-weight="bold" letter-spacing="1" text-anchor="middle">FLAPS</text>
+            <text x="150" y="265" fill="#555555" font-size="10" font-weight="bold" letter-spacing="1" text-anchor="middle">MADE IN USA</text>
+            
+            <g stroke="#ffffff" stroke-width="3.5" stroke-linecap="round">
+                <line x1="105" y1="185" x2="117" y2="175" /> <line x1="95" y1="120" x2="110" y2="123" />  <line x1="150" y1="85" x2="150" y2="100" />  <line x1="205" y1="120" x2="190" y2="123" /> <line x1="195" y1="185" x2="183" y2="175" /> </</g>
+
+            <circle cx="150" cy="45" r="5" fill="#333" stroke="#222"/>
+            <line x1="147" y1="45" x2="153" y2="45" stroke="#111" stroke-width="1.5" />
+            <circle cx="150" cy="235" r="5" fill="#333" stroke="#222"/>
+            <line x1="147" y1="235" x2="153" y2="235" stroke="#111" stroke-width="1.5" />
+
+            <g id="needle" transform="rotate(-126 150 150)" style="transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);">
+                <line x1="150" y1="150" x2="150" y2="40" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+                <line x1="150" y1="150" x2="150" y2="90" stroke="#1c1c1c" stroke-width="6" />
+                <circle cx="150" cy="150" r="10" fill="#222222" stroke="#444444" stroke-width="2"/>
+                <circle cx="150" cy="150" r="3" fill="#666666" />
+            </g>
+        </svg>
+    </div>
+
+    <div class="controls">
+        <label for="flapsInput" style="font-weight: bold; color: #aaa;">SELECTOR:</label>
+        <input type="range" id="flapsInput" min="0" max="4" value="0" step="1">
+        <span id="flapsValue" class="pos-indicator">0°</span>
+    </div>
+
+    <script>
+        // Mapeo exacto de los ángulos en grados para cada posición [0, 10, 20, 30, 40]
+        // -126° es abajo a la izquierda (Flaps 0)
+        // 0° es arriba al centro (Flaps 20)
+        // 126° es abajo a la derecha (Flaps 40)
+        const angulosFlaps = [-126, -63, 0, 63, 126];
+        const posicionesValidas = [0, 10, 20, 30, 40];
+        
+        const needle = document.getElementById('needle');
+        const flapsInput = document.getElementById('flapsInput');
+        const flapsValue = document.getElementById('flapsValue');
+
+        function moverFlapsFijo(indice) {
+            // Buscamos el ángulo correspondiente en el array de calibración
+            const anguloRotacion = angulosFlaps[indice];
+            const gradosTexto = posicionesValidas[indice];
+            
+            // Aplicar la rotación con pivote en el centro del instrumento (150, 150)
+            needle.setAttribute('transform', `rotate(${anguloRotacion} 150 150)`);
+            
+            // Actualizar el texto del selector
+            flapsValue.innerText = gradosTexto + "°";
+        }
+
+        flapsInput.addEventListener('input', (e) => {
+            moverFlapsFijo(parseInt(e.target.value));
+        });
+
+        // Inicializar en la posición 0 al cargar la pantalla
+        moverFlapsFijo(0);
+    </script>
+</body>
+</html>
